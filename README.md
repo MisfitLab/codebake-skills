@@ -67,4 +67,4 @@ Spec and PRD documents live in the consuming project's `.claude/codebake/` direc
 
 ## License
 
-MIT
+[PolyForm Noncommercial 1.0.0](./LICENSE.md). Free to use, modify, and redistribute for any noncommercial purpose. **Selling these skills (or derivative works) is not permitted.** For commercial licensing, contact Misfits Lab.
