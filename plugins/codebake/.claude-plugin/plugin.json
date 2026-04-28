@@ -1,13 +1,13 @@
 {
   "name": "codebake",
   "description": "Spec → PRD → Codebake tasks → isolated execution. Four composable skills (spec-writer, prd-writer, task-writer, task-work) that turn a feature idea into a tested PRD, a fully-loaded Codebake project board, and per-task subagent execution.",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "author": {
     "name": "Misfits Lab"
   },
-  "homepage": "https://github.com/MisfitLab/codebake",
-  "repository": "https://github.com/MisfitLab/codebake",
-  "license": "MIT",
+  "homepage": "https://github.com/MisfitLab/codebake-skills",
+  "repository": "https://github.com/MisfitLab/codebake-skills",
+  "license": "PolyForm-Noncommercial-1.0.0",
   "keywords": [
     "codebake",
     "spec",

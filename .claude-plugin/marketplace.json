@@ -5,7 +5,7 @@
   },
   "metadata": {
     "description": "Codebake skills for spec/PRD/task workflows on top of the Codebake MCP",
-    "version": "0.1.0"
+    "version": "0.2.0"
   },
   "plugins": [
     {
