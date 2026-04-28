@@ -54,7 +54,7 @@ Dispatch a **fresh-context subagent** to work a single Codebake task end-to-end.
    - `description`: `Work Codebake task <id>`
    - `prompt`: see template below — must be self-contained (the subagent does not see this conversation)
 
-7. **Receive the report.** Summarize for the user — PR URL, files changed, tests added/passing, any blockers. If the subagent reported a blocker, do **not** auto-retry; surface it.
+7. **Receive the report.** Summarize for the user — PR URL, files changed, tests added/passing, comments posted (Implementation Plan + Summary & Decisions), and any blockers. If the subagent reported a blocker, do **not** auto-retry; surface it. If the subagent reported "done" but skipped the comments, the test gate, or the acceptance-criteria self-review, treat that as a blocker and do not relay "complete" to the user — request a follow-up cycle that closes the gap.
 
 ## Subagent Prompt Template
 
@@ -84,14 +84,50 @@ on complete, any project-specific gates>
 
 ## Your Job
 
-1. Claim: `tasks_mutate action=start task_identifier=<id> agent="claude_code"`.
-2. Understand the codebase enough to do the work. Follow `CLAUDE.md` conventions.
-3. Implement using TDD where reasonable: write tests in the project's actual framework first, then make them pass.
-4. Verify: run the project's full test suite. Lint and format. All green.
-5. Commit on a feature branch (never main), push, open a PR.
-6. After each commit, call `mcp__codebake__record_task_code_changes` per the workflow.
-7. Once CI is green on the PR, mark the task `ready_for_review` (or `complete` if and only if the project's rules allow agent self-completion) with a `summary` describing what shipped and the PR URL.
-8. Return a final report: PR URL, files changed, tests added, any unexpected findings, and anything you punted.
+1. **Claim** the task: `tasks_mutate action=start task_identifier=<id> agent="claude_code"`.
+
+2. **Extract acceptance criteria into a checklist.** Read the task description carefully and write out every acceptance criterion (and every implicit requirement) as a checkbox list. This is your scorecard — every item must be verifiably satisfied before you mark the task ready for review.
+
+3. **Post an "Implementation Plan" comment** on the task before you write any code:
+   `mcp__codebake__comments action=add task_identifier=<id> body=<markdown>`
+   The comment must include:
+   - **Approach:** 2–4 sentences of how you'll solve it
+   - **Modules touched:** new vs modified, with one-line purposes
+   - **Test strategy:** which framework (discovered from manifest), which behaviors get tests, prior-art reference
+   - **Acceptance-criteria checklist** (the same one from step 2)
+   - **Open questions / risks:** anything you'll resolve as you go
+   This comment is how the human reviewer follows along — make it specific, not generic.
+
+4. **Understand the codebase** enough to do the work. Follow `CLAUDE.md` conventions.
+
+5. **Implement using TDD where reasonable:** write tests in the project's actual framework first, then make them pass. After each commit, call `mcp__codebake__record_task_code_changes` per the workflow.
+
+6. **Post a "Decision" comment** any time you make a non-obvious choice (a design fork, a deviation from the plan, a workaround for a constraint). Short — 2–4 sentences. Future reviewers should be able to reconstruct *why* without reading the diff.
+
+7. **HARD GATE — Verify.** Run the project's **full** test suite, lint, and format. All green.
+   - If anything fails, fix it. Do not proceed past this gate with red tests, lint errors, or unformatted code.
+   - Do not narrow the test selection to "just the new tests" — run the suite the project's CI would run.
+
+8. **HARD GATE — Self-review against acceptance criteria.** Walk through the checklist from step 2:
+   - For each item, point at the specific test(s) or observable behavior that proves it.
+   - If any item lacks a test or is incomplete, finish it before continuing. No partial credit.
+   - If the item turns out to be impossible / out of scope as written, STOP and post a comment asking the human — do not silently drop it.
+
+9. **Commit on a feature branch** (never main), push, open a PR. Reference the task identifier in the PR title or body.
+
+10. **Post a "Summary & Decisions" comment** on the task before flipping its status:
+    `mcp__codebake__comments action=add task_identifier=<id> body=<markdown>`
+    The comment must include:
+    - **Acceptance-criteria checklist** with each item marked done and a link/pointer to the proving test or behavior
+    - **Key decisions** made during implementation (and alternatives considered)
+    - **Test results:** suite name, count, pass/fail, lint/format status
+    - **PR:** URL, files changed (count + paths), lines added/removed
+    - **Anything punted / left as TODO:** with reasoning
+    This comment is the durable record of how this task got done. Be precise.
+
+11. **Mark the task** `ready_for_review` (or `complete` only if the project's rules allow agent self-completion) with a `summary` field describing what shipped and the PR URL. The summary may be terse — the durable record lives in the comment from step 10.
+
+12. **Return a final report** to the caller: PR URL, files changed, tests added/passing, comments posted (with their identifiers), and anything you punted.
 
 If you hit a blocker that requires a human decision (ambiguity in the task,
 architectural choice, missing access, surprising existing behavior), STOP. Do not
@@ -118,6 +154,8 @@ Valid `task_work_model` values: `sonnet` | `opus` | `haiku`. Falls back to `sonn
 - Selected model is reported to the user before dispatch
 - HITL tasks are surfaced for human decision, not auto-dispatched
 - Subagent reports blockers cleanly instead of guessing
+- Subagent posts an Implementation Plan comment **before** coding and a Summary & Decisions comment **before** flipping task status — both via `mcp__codebake__comments`
+- Subagent does not flip status to `ready_for_review` until tests, lint, format, AND the acceptance-criteria self-review have all passed
 
 ## Red Flags — STOP
 
@@ -128,3 +166,6 @@ Valid `task_work_model` values: `sonnet` | `opus` | `haiku`. Falls back to `sonn
 - Letting the subagent skip `tasks_mutate start` / `record_task_code_changes`
 - Auto-completing a task that the project's rules say must wait on PR + CI green
 - Hard-coding a test stack in the prompt — the subagent must discover the stack from the project manifest
+- Reporting "done" with red tests, lint errors, or unformatted code — those are hard gates, not warnings
+- Reporting "done" without a final acceptance-criteria self-review — every checklist item must point at a passing test or observable behavior
+- Skipping the Implementation Plan comment or the Summary & Decisions comment — these are the durable trail for human reviewers
