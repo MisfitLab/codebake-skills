@@ -1,0 +1,70 @@
+# codebake-skills
+
+A Claude Code plugin with composable skills that drive the [Codebake](https://github.com/MisfitLab/codebake) MCP — turn an idea into a spec, a spec into a PRD, a PRD into Codebake tasks, and run those tasks in isolated subagents.
+
+## Skills
+
+| Skill | What it does |
+|---|---|
+| `codebake:spec-writer` | Asks user-story-focused questions one at a time and writes a feature spec to `.claude/codebake/specs/`. |
+| `codebake:prd-writer`  | Reads the spec, discovers the project's stack from its manifest, and writes a PRD with deep modules and per-user-story acceptance criteria + test scaffolds to `.claude/codebake/prds/`. |
+| `codebake:task-writer` | Decomposes the PRD into **tracer-bullet vertical slices**, tags each `AFK` / `HITL` with `Blocked by` dependencies, and creates Codebake tasks via the MCP. |
+| `codebake:task-work`   | Picks up the next available task (or a specified id) and dispatches a fresh-context subagent at the configured model to do the work end-to-end. |
+
+Each skill hands off to the next; nothing auto-fires. Every skill is tech-neutral — language and test framework are discovered from the project's manifest (`package.json` / `mix.exs` / `Cargo.toml` / `pyproject.toml` / `go.mod` / `Gemfile` / etc.), never assumed.
+
+## Install
+
+```bash
+/plugin marketplace add MisfitLab/codebake-skills
+/plugin install codebake@codebake
+```
+
+The skills appear as `codebake:spec-writer`, `codebake:prd-writer`, `codebake:task-writer`, `codebake:task-work`.
+
+### Local development
+
+To install from a local clone instead of GitHub:
+
+```bash
+/plugin marketplace add /path/to/codebake-skills
+/plugin install codebake@codebake
+```
+
+## Configuration
+
+`codebake:task-work` resolves the model used for the dispatched subagent in this order:
+
+1. Argument passed at invocation (e.g., `model=opus`)
+2. `.claude/codebake/config.json` — `task_work_model` field
+3. Default: `sonnet`
+
+```json
+{
+  "task_work_model": "sonnet"
+}
+```
+
+Valid values: `sonnet`, `opus`, `haiku`.
+
+## Workflow
+
+```
+spec-writer  →  prd-writer  →  task-writer  →  task-work (per task)
+   │              │               │                │
+   ▼              ▼               ▼                ▼
+.claude/      .claude/        Codebake         PR + green CI
+ codebake/     codebake/      project          + completion summary
+ specs/        prds/          tasks
+```
+
+Spec and PRD documents live in the consuming project's `.claude/codebake/` directory. Tasks live on the Codebake project itself (via the Codebake MCP).
+
+## Requirements
+
+- Claude Code with the [Codebake MCP](https://github.com/MisfitLab/codebake) configured
+- A Codebake project the calling agent has access to
+
+## License
+
+MIT
