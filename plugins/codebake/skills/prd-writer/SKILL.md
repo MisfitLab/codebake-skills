@@ -32,7 +32,7 @@ Turn a spec into a PRD that an implementer can hand off to anyone. Built around 
    - Lint, format, and CI commands
    Record these in the PRD's "Tech Stack & Conventions" section.
 
-3. **Sketch the modules** that need to be built or modified. Aim for **deep modules** — simple, testable interfaces that encapsulate substantial complexity and rarely change. Describe each module by **purpose and public interface** — function signatures, API endpoints, schemas — *not* file paths (file paths rot; interfaces don't).
+3. **Sketch the modules** that need to be built or modified. Aim for **deep modules** — simple, testable interfaces that encapsulate substantial complexity and rarely change. Describe each module by **purpose and public interface** — function signatures, API endpoints, schemas — *not* file paths (file paths rot; interfaces don't). Keep modules deep but **decomposable into multiple thin vertical slices** — if a module's public interface only admits one giant slice, the task-writer will be forced to oversize tasks.
 
 4. **Confirm modules with the user.** Ask which modules they want covered with tests, and surface anything ambiguous before drafting test details.
 

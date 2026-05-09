@@ -42,6 +42,14 @@ Read a PRD and create real Codebake tasks via the Codebake MCP. Tasks are **trac
    - Cross-cutting items (migrations, infra, docs, observability) → their own tasks only when they truly aren't part of any slice
    </vertical-slice-rules>
 
+   <task-sizing-budget>
+   Each task should be completable by a fresh subagent without exceeding ~50% of its context window. Practical rule of thumb: ≤ 5 files read, ≤ 400 LOC changed, ≤ 3 test iterations. If a slice will plausibly need more, split it — even if both halves are still vertical (e.g., "create + read" as one task, "update + delete" as another).
+
+   **Splits are sequential by default.** When you split a slice for sizing reasons, each follow-on task must declare the previous one in `Blocked by`. Reason: the second task usually builds on schema, modules, or UI scaffolding introduced by the first, and parallel work risks merge conflicts and contradictory designs. Only break the chain if you can name a concrete reason the tasks are truly independent.
+
+   **Self-containment matters more than story coverage** — copy the relevant PRD chunk into the task instead of relying on the agent re-reading the PRD.
+   </task-sizing-budget>
+
    For each slice, decide:
    - **Type:** `AFK` (agent can complete autonomously) vs `HITL` (needs human decision — design review, architectural choice, ambiguity in PRD). Prefer AFK.
    - **Blocked by:** which other slices must complete first
