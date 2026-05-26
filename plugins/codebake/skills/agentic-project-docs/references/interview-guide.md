@@ -4,9 +4,19 @@ Ask questions in small batches. Each batch should create enough certainty to dra
 
 ## Opening questions
 
-Ask 3-5:
+Ask 3-5, one at a time, with a naming pass between Q1 and Q2:
 
 1. What is the software idea in one paragraph?
+
+   **→ Naming pass.** Before asking Q2, propose 3–4 candidate project
+   names tied to the direction the user just described, each with a
+   one-sentence rationale. Use the harness's structured-choice tool
+   (`AskUserQuestion` in Claude Code) so the user can pick or write in
+   their own. Thread the chosen name through every document — never
+   use placeholders like "the project" or "this tool". Flag
+   package-name availability verification (npm, crates.io, PyPI,
+   Homebrew, etc.) as a `delivery-plan.md` TODO, not an Open Question.
+
 2. Who or what will use it: humans, agents, systems, or all three?
 3. What is the first real workflow it must support?
 4. Are there existing docs, tickets, codebases, diagrams, or examples to upload?
