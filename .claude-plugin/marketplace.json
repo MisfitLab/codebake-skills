@@ -4,16 +4,16 @@
     "name": "Misfits Lab"
   },
   "metadata": {
-    "description": "Codebake skills for spec/PRD/task workflows on top of the Codebake MCP",
-    "version": "0.2.0"
+    "description": "Codebake skills for foundational docs, spec/PRD/task workflows on top of the Codebake MCP",
+    "version": "0.3.0"
   },
   "plugins": [
     {
       "name": "codebake",
-      "description": "Spec writer, PRD writer, task writer, and task worker skills that drive the Codebake MCP — turn an idea into a spec, a spec into a PRD with user-story tests, a PRD into vertical-slice Codebake tasks, and run individual tasks in isolated subagents.",
+      "description": "Agentic project docs, spec writer, PRD writer, task writer, and task worker skills that drive the Codebake MCP — interview the user into agent-ready foundational docs, turn an idea into a spec, a spec into a PRD with user-story tests, a PRD into vertical-slice Codebake tasks, and run individual tasks in isolated subagents.",
       "source": "./plugins/codebake",
       "category": "productivity",
-      "tags": ["codebake", "planning", "prd", "user-stories", "task-management"]
+      "tags": ["codebake", "agentic-docs", "domain-driven", "behavior-driven", "planning", "prd", "user-stories", "task-management"]
     }
   ]
 }

@@ -1,17 +1,20 @@
 # codebake-skills
 
-A Claude Code plugin with composable skills that drive the [Codebake](https://github.com/MisfitLab/codebake) MCP — turn an idea into a spec, a spec into a PRD, a PRD into Codebake tasks, and run those tasks in isolated subagents.
+A Claude Code plugin with composable skills that drive the [Codebake](https://github.com/MisfitLab/codebake) MCP — interview the user into agent-ready foundational docs, turn an idea into a spec, a spec into a PRD, a PRD into Codebake tasks, and run those tasks in isolated subagents.
 
 ## Skills
 
 | Skill | What it does |
 |---|---|
+| `codebake:agentic-project-docs` | One-shot at project inception: interviews the user and writes a behavior-first, domain-driven foundational doc set (`domain-vision.md`, `behavior-contract.md`, `system-architecture.md`, `delivery-plan.md`, `decision-log.md`) to `.claude/codebake/docs/`. Auto-chooses small / standard / large doc shape based on complexity signals. |
 | `codebake:spec-writer` | Asks user-story-focused questions one at a time and writes a feature spec to `.claude/codebake/specs/`. |
 | `codebake:prd-writer`  | Reads the spec, discovers the project's stack from its manifest, and writes a PRD with deep modules and per-user-story acceptance criteria + test scaffolds to `.claude/codebake/prds/`. |
 | `codebake:task-writer` | Decomposes the PRD into **tracer-bullet vertical slices**, tags each `AFK` / `HITL` with `Blocked by` dependencies, and creates Codebake tasks via the MCP. |
 | `codebake:task-work`   | Picks up the next available task (or a specified id) and dispatches a fresh-context subagent at the configured model to do the work end-to-end. |
 
 Each skill hands off to the next; nothing auto-fires. Every skill is tech-neutral — language and test framework are discovered from the project's manifest (`package.json` / `mix.exs` / `Cargo.toml` / `pyproject.toml` / `go.mod` / `Gemfile` / etc.), never assumed.
+
+Every skill also ships an `agents/openai.yaml` so it can be surfaced under Codex/OpenAI Agents with a stable display name.
 
 ## Install
 
@@ -20,7 +23,7 @@ Each skill hands off to the next; nothing auto-fires. Every skill is tech-neutra
 /plugin install codebake@codebake
 ```
 
-The skills appear as `codebake:spec-writer`, `codebake:prd-writer`, `codebake:task-writer`, `codebake:task-work`.
+The skills appear as `codebake:agentic-project-docs`, `codebake:spec-writer`, `codebake:prd-writer`, `codebake:task-writer`, `codebake:task-work`.
 
 ### Local development
 
@@ -50,15 +53,18 @@ Valid values: `sonnet`, `opus`, `haiku`.
 ## Workflow
 
 ```
-spec-writer  →  prd-writer  →  task-writer  →  task-work (per task)
-   │              │               │                │
-   ▼              ▼               ▼                ▼
-.claude/      .claude/        Codebake         PR + green CI
- codebake/     codebake/      project          + completion summary
- specs/        prds/          tasks
+agentic-project-docs  →  spec-writer  →  prd-writer  →  task-writer  →  task-work (per task)
+   (once per project)        │              │               │                │
+   │                         ▼              ▼               ▼                ▼
+   ▼                      .claude/      .claude/        Codebake         PR + green CI
+.claude/                   codebake/     codebake/      project          + completion summary
+ codebake/                 specs/        prds/          tasks
+ docs/
 ```
 
-Spec and PRD documents live in the consuming project's `.claude/codebake/` directory. Tasks live on the Codebake project itself (via the Codebake MCP).
+Foundational docs, specs, and PRDs live in the consuming project's `.claude/codebake/` directory. Tasks live on the Codebake project itself (via the Codebake MCP).
+
+`agentic-project-docs` runs **once at project inception** (or when foundational docs need a refresh). Per-feature work then flows `spec-writer → prd-writer → task-writer → task-work`, with `spec-writer` and `prd-writer` reading the foundational docs for ubiquitous language and behavioral contracts.
 
 ## Requirements
 

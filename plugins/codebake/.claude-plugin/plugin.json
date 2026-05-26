@@ -1,7 +1,7 @@
 {
   "name": "codebake",
-  "description": "Spec → PRD → Codebake tasks → isolated execution. Four composable skills (spec-writer, prd-writer, task-writer, task-work) that turn a feature idea into a tested PRD, a fully-loaded Codebake project board, and per-task subagent execution.",
-  "version": "0.2.0",
+  "description": "Foundational docs → Spec → PRD → Codebake tasks → isolated execution. Five composable skills (agentic-project-docs, spec-writer, prd-writer, task-writer, task-work) that turn a domain idea into agent-ready foundational docs, a tested PRD, a fully-loaded Codebake project board, and per-task subagent execution.",
+  "version": "0.3.0",
   "author": {
     "name": "Misfits Lab"
   },
@@ -10,6 +10,9 @@
   "license": "PolyForm-Noncommercial-1.0.0",
   "keywords": [
     "codebake",
+    "agentic-docs",
+    "domain-driven",
+    "behavior-driven",
     "spec",
     "prd",
     "user-stories",

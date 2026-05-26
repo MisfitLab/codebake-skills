@@ -1,0 +1,3 @@
+interface:
+  display_name: "Codebake Task Worker"
+  short_description: "Pick up the next Codebake task and dispatch a fresh-context subagent to work it end-to-end."

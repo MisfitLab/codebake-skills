@@ -1,0 +1,3 @@
+interface:
+  display_name: "Codebake PRD Writer"
+  short_description: "Turn an approved spec into a PRD with deep modules and per-user-story acceptance criteria."

@@ -1,0 +1,3 @@
+interface:
+  display_name: "Agentic Project Docs"
+  short_description: "Interview users and draft agent-ready project documentation."

@@ -1,0 +1,3 @@
+interface:
+  display_name: "Codebake Spec Writer"
+  short_description: "Turn a feature idea into a user-story-focused spec via one-question-at-a-time dialogue."
