@@ -11,6 +11,7 @@ A Claude Code plugin with composable skills that drive the [Codebake](https://gi
 | `codebake:prd-writer`  | Reads the spec, discovers the project's stack from its manifest, and writes a PRD with deep modules and per-user-story acceptance criteria + test scaffolds to `.claude/codebake/prds/`. |
 | `codebake:task-writer` | Decomposes the PRD into **tracer-bullet vertical slices**, tags each `AFK` / `HITL` with `Blocked by` dependencies, and creates Codebake tasks via the MCP. |
 | `codebake:task-work`   | Picks up the next available task (or a specified id) and dispatches a fresh-context subagent at the configured model to do the work end-to-end. |
+| `codebake:next-task`   | Pulls the next task, briefs it, checks what already exists, then decides how best to complete it and works it **in this session** (routing `wayfinder:*` tickets to `wayfinder`). Use `task-work` instead when you want a fresh-context subagent. |
 | `codebake:wayfinder`   | For efforts too big or foggy for one session: charts a **map** (a `keep_open` parent tagged `wayfinder:map`) of **decision tickets** (`wayfinder:research` / `prototype` / `grilling` / `task`) wired with native dependencies, then resolves one ticket per session until the way to the destination is clear. Also loads on its own whenever an agent picks up a `wayfinder:*` task, so decision tickets get grilled, not implemented. |
 
 Each skill hands off to the next; nothing auto-fires (except `wayfinder` on `wayfinder:*` tasks). Every skill is tech-neutral — language and test framework are discovered from the project's manifest (`package.json` / `mix.exs` / `Cargo.toml` / `pyproject.toml` / `go.mod` / `Gemfile` / etc.), never assumed.
@@ -24,7 +25,7 @@ Every skill also ships an `agents/openai.yaml` so it can be surfaced under Codex
 /plugin install codebake@codebake
 ```
 
-The skills appear as `codebake:agentic-project-docs`, `codebake:spec-writer`, `codebake:prd-writer`, `codebake:task-writer`, `codebake:task-work`, `codebake:wayfinder`.
+The skills appear as `codebake:agentic-project-docs`, `codebake:spec-writer`, `codebake:prd-writer`, `codebake:task-writer`, `codebake:task-work`, `codebake:next-task`, `codebake:wayfinder`.
 
 For Codex, Grok, and other agents that read `.agents/skills/`:
 

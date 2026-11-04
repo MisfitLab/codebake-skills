@@ -1,0 +1,3 @@
+interface:
+  display_name: "Codebake Next Task"
+  short_description: "Pull the next Codebake task, brief it, and work it in the current session."
