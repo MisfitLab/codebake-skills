@@ -1,0 +1,3 @@
+interface:
+  display_name: "Codebake Wayfinder"
+  short_description: "Chart a large effort as a map of decision tickets on Codebake and resolve them one at a time."

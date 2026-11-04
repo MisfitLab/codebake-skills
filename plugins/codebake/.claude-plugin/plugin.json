@@ -1,7 +1,7 @@
 {
   "name": "codebake",
-  "description": "Foundational docs → Spec → PRD → Codebake tasks → isolated execution. Five composable skills (agentic-project-docs, spec-writer, prd-writer, task-writer, task-work) that turn a domain idea into agent-ready foundational docs, a tested PRD, a fully-loaded Codebake project board, and per-task subagent execution.",
-  "version": "0.3.0",
+  "description": "Foundational docs → Spec → PRD → Codebake tasks → isolated execution. Six composable skills (agentic-project-docs, spec-writer, prd-writer, task-writer, task-work, wayfinder) that turn a domain idea into agent-ready foundational docs, a tested PRD, a fully-loaded Codebake project board, and per-task subagent execution; wayfinder charts efforts too big for one session as a map of decision tickets.",
+  "version": "0.4.0",
   "author": {
     "name": "Misfits Lab"
   },
